@@ -1,0 +1,9 @@
+{
+  "builders": {
+    "build": {
+      "implementation": "./build/index.js",
+      "schema": "./build/schema.json",
+      "description": "Build a node application using typescript compiler tsc."
+    }
+  }
+}

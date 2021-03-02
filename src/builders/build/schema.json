@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "title": "Compile typescript projects",
+  "description": "Build a node application using typescript compiler tsc.",
+  "type": "object",
+  "properties": {
+    "watch": {
+      "description": "Whether to watch source files for changes and recompile.",
+      "type": "boolean",
+      "default": false
+    },
+    "outputPath": {
+      "description": "Target folder for the built app (relative to the workspace root). Will override compilerOptions.outDir setting of tsconfig.",
+      "type": "string"
+    },
+    "tsConfig": {
+      "description": "Path to the tsconfig file to use (relative to the workspace root).",
+      "type": "string"
+    },
+    "cleanOutputPath": {
+      "description": "Whether to clean ouputPath before building app.",
+      "type": "boolean",
+      "default": "true"
+    }
+  },
+  "required": ["tsConfig"],
+  "additionalProperties": true
+}
