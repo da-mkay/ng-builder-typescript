@@ -1,47 +1,60 @@
 {
-  "name": "@da-mkay/ng-builder-typescript",
-  "version": "0.0.1",
-  "description": "A builder for the Angular CLI to build node apps using the typescript compiler tsc (no webpack or any other bundler used).",
-  "scripts": {
-    "build": "npm run clean && tsc -p tsconfig.json && npm run copy:json",
-    "clean": "rimraf dist",
-    "copy:json": "cpx 'src/**/*.json' ./dist"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged --pattern '**/*.ts'"
+    "name": "@da-mkay/ng-builder-typescript",
+    "version": "0.0.1",
+    "description": "A set of builders and schematics for the Angular CLI to build Node.js apps using the typescript compiler tsc (no webpack or any other bundler used).",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/da-mkay/ng-builder-typescript.git"
+    },
+    "homepage": "https://github.com/da-mkay/ng-builder-typescript",
+    "scripts": {
+        "build": "npm run clean && tsc -p tsconfig.json && npm run copy:jsons && npm run copy:schematic-files",
+        "clean": "rimraf dist",
+        "copy:jsons": "cpx 'src/**/{schema,collection,builders}.json' ./dist",
+        "copy:schematic-files": "cpx 'src/schematics/**/files/**' ./dist/schematics"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "pretty-quick --staged --pattern '**/*.ts'"
+        }
+    },
+    "keywords": [
+        "angular",
+        "ng",
+        "tsc",
+        "typescript",
+        "builder",
+        "watch"
+    ],
+    "author": "da-mkay (https://github.com/da-mkay)",
+    "license": "MIT",
+    "peerDependencies": {
+        "inquirer": ">=7.0.0",
+        "typescript": ">=3.4 <=4.1",
+        "rxjs": "^6.4.0"
+    },
+    "devDependencies": {
+        "@types/inquirer": "^7.3.1",
+        "@types/node": "^14.14.26",
+        "cpx": "^1.5.0",
+        "husky": "^5.0.9",
+        "inquirer": "8.0.0",
+        "prettier": "^2.2.1",
+        "pretty-quick": "^3.1.0",
+        "rimraf": "^3.0.2",
+        "rxjs": "^6.4.0",
+        "typescript": "^4.1.5"
+    },
+    "dependencies": {
+        "@angular-devkit/architect": "^0.1102.0",
+        "@angular-devkit/core": ">= 8.0.0",
+        "@angular-devkit/schematics": ">= 8.0.0",
+        "@schematics/angular": ">= 8.0.0",
+        "fs-extra": "^9.1.0"
+    },
+    "builders": "./dist/builders/builders.json",
+    "schematics": "./dist/schematics/collection.json",
+    "ng-add": {
+        "save": "devDependencies"
     }
-  },
-  "keywords": [
-    "angular",
-    "ng",
-    "tsc",
-    "typescript",
-    "builder",
-    "watch"
-  ],
-  "author": "da-mkay (https://github.com/da-mkay)",
-  "license": "MIT",
-  "peerDependencies": {
-    "@angular-devkit/architect": "^0.1102.0",
-    "@angular-devkit/core": "^11.2.0",
-    "typescript": ">=3.4 <=4.1",
-    "rxjs": "^6.6.3"
-  },
-  "devDependencies": {
-    "@angular-devkit/architect": "^0.1102.0",
-    "@angular-devkit/core": "^11.2.0",
-    "@types/node": "^14.14.26",
-    "cpx": "^1.5.0",
-    "husky": "^5.0.9",
-    "prettier": "^2.2.1",
-    "pretty-quick": "^3.1.0",
-    "rimraf": "^3.0.2",
-    "rxjs": "^6.6.3",
-    "typescript": "^4.1.5"
-  },
-  "dependencies": {
-    "fs-extra": "^9.1.0"
-  },
-  "builders": "./dist/builders/builders.json"
 }

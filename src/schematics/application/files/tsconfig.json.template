@@ -1,16 +1,14 @@
 {
+    "extends": "<%= relativePathToWorkspaceRoot %>/tsconfig.json",
     "compilerOptions": {
         "baseUrl": "tsconfig",
-        "rootDir": "src",
+        "rootDir": "./src",
         "lib": ["es2018"],
         "declaration": true,
         "module": "commonjs",
         "moduleResolution": "node",
         "sourceMap": true,
-        "target": "es6",
-        "types": ["node"],
-        "outDir": "dist"
+        "target": "es6"
     },
-    "include": ["src/**/*.ts"],
-    "exclude": ["src/schematics/**/files/**/*.ts"]
+    "include": ["./src/**/*.ts"]
 }

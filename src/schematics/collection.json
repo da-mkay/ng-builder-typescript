@@ -1,0 +1,15 @@
+{
+    "$schema": "../../node_modules/@angular-devkit/schematics/collection-schema.json",
+    "schematics": {
+        "ng-add": {
+            "description": "Install dependencies of @da-mkay/ng-builder-typescript.",
+            "factory": "./ng-add/index.js"
+        },
+        "application": {
+            "description": "Create a new Node.js application that is written in typescript.",
+            "factory": "./application/index.js",
+            "schema": "./application/schema.json",
+            "aliases": ["app"]
+        }
+    }
+}
