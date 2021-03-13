@@ -29,16 +29,14 @@
     "author": "da-mkay (https://github.com/da-mkay)",
     "license": "MIT",
     "peerDependencies": {
-        "inquirer": ">=7.0.0",
         "typescript": ">=3.4 <=4.1",
         "rxjs": "^6.4.0"
     },
     "devDependencies": {
-        "@types/inquirer": "^7.3.1",
+        "@types/inquirer": "^7.0.0",
         "@types/node": "^14.14.26",
         "cpx": "^1.5.0",
         "husky": "^5.0.9",
-        "inquirer": "8.0.0",
         "prettier": "^2.2.1",
         "pretty-quick": "^3.1.0",
         "rimraf": "^3.0.2",
@@ -50,7 +48,8 @@
         "@angular-devkit/core": ">= 8.0.0",
         "@angular-devkit/schematics": ">= 8.0.0",
         "@schematics/angular": ">= 8.0.0",
-        "fs-extra": "^9.1.0"
+        "fs-extra": "^9.1.0",
+        "inquirer": "^7.0.0"
     },
     "builders": "./dist/builders/builders.json",
     "schematics": "./dist/schematics/collection.json",
