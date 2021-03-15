@@ -50,7 +50,7 @@ Target folder for the built app (relative to the workspace root). Will override 
 Path to the tsconfig file to use (relative to the workspace root).
 
 **watch**: `boolean`\
-(default: 'false')\
+(default: `false`)\
 Whether to watch source files for changes and recompile.
 
 **cleanOutputPath**: `boolean`\
