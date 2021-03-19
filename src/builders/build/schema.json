@@ -21,6 +21,32 @@
             "description": "Whether to clean ouputPath before building app.",
             "type": "boolean",
             "default": "true"
+        },
+        "assets": {
+            "description": "Files to copy to the outputPath. 'input' is a path relative to the workspace root. 'glob' is a glob relative to 'input'. 'output' is a path relative to the outputPath. 'ignore' is an optional array of globs relative to 'input'.",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "glob": {
+                        "type": "string"
+                    },
+                    "input": {
+                        "type": "string"
+                    },
+                    "output": {
+                        "type": "string"
+                    },
+                    "ignore": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": ["glob", "input", "output"],
+                "additionalProperties": false
+            }
         }
     },
     "required": ["tsConfig"],

@@ -1,10 +1,11 @@
 import { BuilderContext, BuilderOutput, createBuilder } from '@angular-devkit/architect';
-import { defer, Observable, of } from 'rxjs';
+import { defer, Observable, of, combineLatest } from 'rxjs';
 import { readFileSync, removeSync, existsSync } from 'fs-extra';
 import { JsonObject } from '@angular-devkit/core';
 import * as ts from 'typescript';
 import * as path from 'path';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
+import { AssetOption, Assets } from './assets';
 
 /**
  * Options for the "build" builder.
@@ -14,6 +15,7 @@ export interface BuildOptions extends JsonObject {
     outputPath?: string;
     tsConfig: string;
     watch: boolean;
+    assets?: AssetOption[];
 }
 
 const formatHost: ts.FormatDiagnosticsHost = {
@@ -34,19 +36,27 @@ export const execute = (options: BuildOptions, context: BuilderContext): Observa
         const parsedCommandLine = readTsconfig(tsconfigPath, context);
         if (options.outputPath) {
             parsedCommandLine.options.outDir = path.resolve(context.workspaceRoot, options.outputPath);
-        }
-        if (!parsedCommandLine.options.outDir) {
+        } else if (!parsedCommandLine.options.outDir) {
             throw new Error('outputPath in angular.json not set and no outDir set in tsconfig!');
+        } else {
+            parsedCommandLine.options.outDir = path.resolve(context.workspaceRoot, parsedCommandLine.options.outDir);
         }
         if (options.cleanOutputPath && parsedCommandLine.options.outDir) {
             removeSync(parsedCommandLine.options.outDir);
         }
-        return of(parsedCommandLine);
+        const assets = new Assets(context, parsedCommandLine.options.outDir, options.assets || []);
+        const result: [ts.ParsedCommandLine, Assets] = [parsedCommandLine, assets];
+        return of(result);
     }).pipe(
-        switchMap((parsedCommandLine) => {
+        switchMap(([parsedCommandLine, assets]) => {
             if (options.watch) {
-                return buildWatch(parsedCommandLine.options.outDir, options, context);
+                return combineLatest([buildWatch(parsedCommandLine.options.outDir, options, context), assets.watchAndCopy()]).pipe(
+                    map(([buildResult, assetResult]) => ({
+                        success: buildResult.success && assetResult.success,
+                    }))
+                );
             }
+            assets.copy();
             return buildOnce(parsedCommandLine, context);
         }),
         catchError((err) => {

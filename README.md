@@ -56,3 +56,12 @@ Whether to watch source files for changes and recompile.
 **cleanOutputPath**: `boolean`\
 (default: `true`)\
 Whether to clean ouputPath before building app.
+
+**assets**: `{ input: string, glob: string, output: string, ignore?: string[] }[]`\
+Files to copy to the `outputPath`. Each asset object has the following properties:
+- `input`: a path relative to the workspace root
+- `glob`: a glob relative to `input`
+- `output`: a path relative to `outputPath`
+- `ignore`: an optional array of globs relative to `input`
+
+In watch mode (`watch` set to `true`) the asset `input` folders will be watched for changes, i.e. added or modified files. On each change the updated file will be copied.
