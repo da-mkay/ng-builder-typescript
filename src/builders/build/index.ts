@@ -46,20 +46,23 @@ export const execute = (options: BuildOptions, context: BuilderContext): Observa
             removeSync(parsedCommandLine.options.outDir);
         }
         const assets = new Assets(context, parsedCommandLine.options.outDir, options.assets || []);
-        initFileReplacementHandling(context, options.fileReplacements);
-        const result: [ts.ParsedCommandLine, Assets] = [parsedCommandLine, assets];
+        const customTsSys = createFileReplacementTsSystem(context, options.fileReplacements);
+        const result: [ts.ParsedCommandLine, ts.System, Assets] = [parsedCommandLine, customTsSys, assets];
         return of(result);
     }).pipe(
-        switchMap(([parsedCommandLine, assets]) => {
+        switchMap(([parsedCommandLine, customTsSys, assets]) => {
             if (options.watch) {
-                return combineLatest([buildWatch(parsedCommandLine.options.outDir, options, context), assets.watchAndCopy()]).pipe(
+                return combineLatest([
+                    buildWatch(parsedCommandLine.options.outDir, options, context, customTsSys),
+                    assets.watchAndCopy(),
+                ]).pipe(
                     map(([buildResult, assetResult]) => ({
                         success: buildResult.success && assetResult.success,
                     }))
                 );
             }
             assets.copy();
-            return buildOnce(parsedCommandLine, context);
+            return buildOnce(parsedCommandLine, context, customTsSys);
         }),
         catchError((err) => {
             context.logger.error(err.message || err + '');
@@ -71,12 +74,12 @@ export const execute = (options: BuildOptions, context: BuilderContext): Observa
 /**
  * Compile the project, then wait for file changes and re-compile on each change.
  */
-function buildWatch(outDir: string, options: BuildOptions, context: BuilderContext) {
+function buildWatch(outDir: string, options: BuildOptions, context: BuilderContext, customTsSys: ts.System) {
     return new Observable<BuilderOutput>((subscriber) => {
         const host = ts.createWatchCompilerHost(
             options.tsConfig,
             { outDir },
-            ts.sys,
+            customTsSys,
             ts.createEmitAndSemanticDiagnosticsBuilderProgram,
             (diagnostic) => logDiagnostics(diagnostic, context),
             (diagnostic, newLine, opts, errorCount?) => {
@@ -114,8 +117,11 @@ function buildWatch(outDir: string, options: BuildOptions, context: BuilderConte
 /**
  * Compile the project once, then complete.
  */
-async function buildOnce(parsedCommandLine: ts.ParsedCommandLine, context: BuilderContext) {
-    const p: ts.Program = ts.createProgram(parsedCommandLine.fileNames, parsedCommandLine.options);
+async function buildOnce(parsedCommandLine: ts.ParsedCommandLine, context: BuilderContext, customTsSys: ts.System) {
+    // We use createIncrementalCompilerHost, s.t. we can specify a custom ts.System to use ...
+    const host = ts.createIncrementalCompilerHost(parsedCommandLine.options, customTsSys);
+    // ... but we use createProgram instead of createIncrementalProgram because we are not interested in incremental builds (for now)
+    const p = ts.createProgram(parsedCommandLine.fileNames, parsedCommandLine.options, host);
     const emitResult = p.emit();
     const diagnostics = ts.getPreEmitDiagnostics(p).concat(emitResult.diagnostics);
     logDiagnostics(diagnostics, context);
@@ -168,22 +174,31 @@ function readTsconfig(tsconfigPath: string, context: BuilderContext) {
     return parsedCommandLine;
 }
 
-function initFileReplacementHandling(context: BuilderContext, fileReplacements: { replace: string; with: string }[] = []) {
+function createFileReplacementTsSystem(context: BuilderContext, fileReplacements: { replace: string; with: string }[] = []) {
     const replacements = new Map<string, string>(
         fileReplacements.map((fr) => [path.resolve(context.workspaceRoot, fr.replace), path.resolve(context.workspaceRoot, fr.with)])
     );
 
-    const origReadFile = ts.sys.readFile.bind(ts.sys);
-    ts.sys.readFile = ((p, enc) => {
-        p = replacements.get(p) || p;
-        return origReadFile(p, enc);
-    }).bind(ts.sys);
+    // use Proxy, s.t. we don't need to monkey-patch ts.sys
+    const customTsSys = new Proxy(ts.sys, {
+        get: function (target, prop, receiver) {
+            if (prop === 'readFile') {
+                return function (path, encoding?) {
+                    path = replacements.get(path) || path;
+                    return target[prop](path, encoding);
+                }.bind(target);
+            }
+            if (prop === 'watchFile') {
+                return function (path, callback, pollingInterval?, options?) {
+                    path = replacements.get(path) || path;
+                    return target[prop](path, callback, pollingInterval, options);
+                }.bind(target);
+            }
+            return Reflect.get(target, prop, receiver);
+        },
+    });
 
-    const origWatch = ts.sys.watchFile.bind(ts.sys);
-    ts.sys.watchFile = ((p, cb, pi, opts) => {
-        p = replacements.get(p) || p;
-        return origWatch(p, cb, pi, opts);
-    }).bind(ts.sys);
+    return customTsSys;
 }
 
 export default createBuilder<BuildOptions, BuilderOutput>(execute);

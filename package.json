@@ -29,7 +29,7 @@
     "author": "da-mkay (https://github.com/da-mkay)",
     "license": "MIT",
     "peerDependencies": {
-        "typescript": ">=3.4 <=4.1",
+        "typescript": ">=3.4 <4.2",
         "rxjs": "^6.4.0"
     },
     "devDependencies": {
