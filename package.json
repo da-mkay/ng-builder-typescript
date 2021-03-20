@@ -24,7 +24,9 @@
         "tsc",
         "typescript",
         "builder",
-        "watch"
+        "watch",
+        "node",
+        "node.js"
     ],
     "author": "da-mkay (https://github.com/da-mkay)",
     "license": "MIT",
