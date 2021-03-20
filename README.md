@@ -65,3 +65,8 @@ Files to copy to the `outputPath`. Each asset object has the following propertie
 - `ignore`: an optional array of globs relative to `input`
 
 In watch mode (`watch` set to `true`) the asset `input` folders will be watched for changes, i.e. added or modified files. On each change the updated file will be copied.
+
+**fileReplacements**: `{ replace: string, with: string }[]`\
+Replace files during compilation. Each array item is an object having the following properties:
+- `replace`: A file path relative to the workspace root that should be replaced.
+- `with`: A file path relative to the workspace root that should replace the path specified with `replace`.

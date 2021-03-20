@@ -16,6 +16,7 @@ export interface BuildOptions extends JsonObject {
     tsConfig: string;
     watch: boolean;
     assets?: AssetOption[];
+    fileReplacements?: { replace: string; with: string }[];
 }
 
 const formatHost: ts.FormatDiagnosticsHost = {
@@ -45,6 +46,7 @@ export const execute = (options: BuildOptions, context: BuilderContext): Observa
             removeSync(parsedCommandLine.options.outDir);
         }
         const assets = new Assets(context, parsedCommandLine.options.outDir, options.assets || []);
+        initFileReplacementHandling(context, options.fileReplacements);
         const result: [ts.ParsedCommandLine, Assets] = [parsedCommandLine, assets];
         return of(result);
     }).pipe(
@@ -71,12 +73,11 @@ export const execute = (options: BuildOptions, context: BuilderContext): Observa
  */
 function buildWatch(outDir: string, options: BuildOptions, context: BuilderContext) {
     return new Observable<BuilderOutput>((subscriber) => {
-        const createProgram = ts.createEmitAndSemanticDiagnosticsBuilderProgram;
         const host = ts.createWatchCompilerHost(
             options.tsConfig,
             { outDir },
             ts.sys,
-            createProgram,
+            ts.createEmitAndSemanticDiagnosticsBuilderProgram,
             (diagnostic) => logDiagnostics(diagnostic, context),
             (diagnostic, newLine, opts, errorCount?) => {
                 if (diagnostic.code === 6031 || diagnostic.code === 6032) {
@@ -165,6 +166,24 @@ function readTsconfig(tsconfigPath: string, context: BuilderContext) {
         throw new Error('Failed to parse tsconfig');
     }
     return parsedCommandLine;
+}
+
+function initFileReplacementHandling(context: BuilderContext, fileReplacements: { replace: string; with: string }[] = []) {
+    const replacements = new Map<string, string>(
+        fileReplacements.map((fr) => [path.resolve(context.workspaceRoot, fr.replace), path.resolve(context.workspaceRoot, fr.with)])
+    );
+
+    const origReadFile = ts.sys.readFile.bind(ts.sys);
+    ts.sys.readFile = ((p, enc) => {
+        p = replacements.get(p) || p;
+        return origReadFile(p, enc);
+    }).bind(ts.sys);
+
+    const origWatch = ts.sys.watchFile.bind(ts.sys);
+    ts.sys.watchFile = ((p, cb, pi, opts) => {
+        p = replacements.get(p) || p;
+        return origWatch(p, cb, pi, opts);
+    }).bind(ts.sys);
 }
 
 export default createBuilder<BuildOptions, BuilderOutput>(execute);

@@ -47,6 +47,22 @@
                 "required": ["glob", "input", "output"],
                 "additionalProperties": false
             }
+        },
+        "fileReplacements": {
+            "description": "Replace files during compilation. Each array item is an object having the properties 'replace' and 'with'. Both values must be set to a file path (relative to workspace root).",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "replace": {
+                        "type": "string"
+                    },
+                    "with": {
+                        "type": "string"
+                    }
+                },
+                "required": ["replace", "with"]
+            }
         }
     },
     "required": ["tsConfig"],
