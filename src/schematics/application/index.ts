@@ -49,6 +49,16 @@ export default function (options: ApplicationOptions): Rule {
                                 outputPath: `dist/${options.name}`,
                                 tsConfig: `${root}tsconfig.json`,
                             },
+                            configurations: {
+                                production: {
+                                    fileReplacements: [
+                                        {
+                                            replace: `${sourceRoot}/environments/environment.ts`,
+                                            with: `${sourceRoot}/environments/environment.prod.ts`,
+                                        },
+                                    ],
+                                },
+                            },
                         },
                     },
                 });
