@@ -1,6 +1,10 @@
 # Changelog
 
-## Version 0.2.0, unreleased
+## Version 0.2.0, 2020-03-26
+
+### `build` builder:
+
+- fix: file replacements do not work when running on Windows
 
 ### `serve` builder:
 

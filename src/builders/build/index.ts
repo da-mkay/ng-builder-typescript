@@ -6,6 +6,7 @@ import * as ts from 'typescript';
 import * as path from 'path';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { AssetOption, Assets } from './assets';
+import { normalizePath } from '../utils/path';
 
 /**
  * Options for the "build" builder.
@@ -187,7 +188,10 @@ function readTsconfig(tsconfigPath: string, context: BuilderContext) {
 
 function createFileReplacementTsSystem(context: BuilderContext, fileReplacements: { replace: string; with: string }[] = []) {
     const replacements = new Map<string, string>(
-        fileReplacements.map((fr) => [path.resolve(context.workspaceRoot, fr.replace), path.resolve(context.workspaceRoot, fr.with)])
+        fileReplacements.map((fr) => [
+            normalizePath(path.join(context.workspaceRoot, fr.replace)),
+            normalizePath(path.join(context.workspaceRoot, fr.with)),
+        ])
     );
 
     // use Proxy, s.t. we don't need to monkey-patch ts.sys
