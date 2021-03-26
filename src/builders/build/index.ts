@@ -30,18 +30,7 @@ const formatHost: ts.FormatDiagnosticsHost = {
  */
 export const execute = (options: BuildOptions, context: BuilderContext): Observable<BuilderOutput> => {
     return defer(() => {
-        const tsconfigPath = path.resolve(context.workspaceRoot, options.tsConfig);
-        if (!existsSync(tsconfigPath)) {
-            throw new Error(`tsconfig file could not be found: ${tsconfigPath}`);
-        }
-        const parsedCommandLine = readTsconfig(tsconfigPath, context);
-        if (options.outputPath) {
-            parsedCommandLine.options.outDir = path.resolve(context.workspaceRoot, options.outputPath);
-        } else if (!parsedCommandLine.options.outDir) {
-            throw new Error('outputPath in angular.json not set and no outDir set in tsconfig!');
-        } else {
-            parsedCommandLine.options.outDir = path.resolve(context.workspaceRoot, parsedCommandLine.options.outDir);
-        }
+        const parsedCommandLine = parseTsConfig(context, options.tsConfig, options.outputPath);
         if (options.cleanOutputPath && parsedCommandLine.options.outDir) {
             removeSync(parsedCommandLine.options.outDir);
         }
@@ -156,6 +145,28 @@ function logDiagnostics(diagnostics: ts.Diagnostic | ts.Diagnostic[], context: B
             }
         }
     }
+}
+
+/**
+ * Parse tsconfig file.
+ * @param context The builder context.
+ * @param tsConfig The path to the tsconfig file (relative to workspace root).
+ * @param outputPath The path to an output folder to use (relative to workspace root). This overrides the tsconfig's outDir option.
+ */
+export function parseTsConfig(context: BuilderContext, tsConfig: string, outputPath?: string) {
+    const tsconfigPath = path.resolve(context.workspaceRoot, tsConfig);
+    if (!existsSync(tsconfigPath)) {
+        throw new Error(`tsconfig file could not be found: ${tsconfigPath}`);
+    }
+    const parsedCommandLine = readTsconfig(tsconfigPath, context);
+    if (outputPath) {
+        parsedCommandLine.options.outDir = path.resolve(context.workspaceRoot, outputPath);
+    } else if (!parsedCommandLine.options.outDir) {
+        throw new Error('outputPath in angular.json not set and no outDir set in tsconfig!');
+    } else {
+        parsedCommandLine.options.outDir = path.resolve(context.workspaceRoot, parsedCommandLine.options.outDir);
+    }
+    return parsedCommandLine;
 }
 
 function readTsconfig(tsconfigPath: string, context: BuilderContext) {

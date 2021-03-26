@@ -60,6 +60,18 @@ export default function (options: ApplicationOptions): Rule {
                                 },
                             },
                         },
+                        serve: {
+                            builder: '@da-mkay/ng-builder-typescript:serve',
+                            options: {
+                                buildTarget: `${options.name}:build`,
+                                main: `main.js`,
+                            },
+                            configurations: {
+                                production: {
+                                    buildTarget: `${options.name}:build:production`,
+                                },
+                            },
+                        },
                     },
                 });
             }),

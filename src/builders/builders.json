@@ -4,6 +4,11 @@
             "implementation": "./build/index.js",
             "schema": "./build/schema.json",
             "description": "Build a Node.js application using typescript compiler tsc."
+        },
+        "serve": {
+            "implementation": "./serve/index.js",
+            "schema": "./serve/schema.json",
+            "description": "Run a build target in watch mode and start the built project in a Node.js process each time the compilation succeeded."
         }
     }
 }

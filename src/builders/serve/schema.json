@@ -1,0 +1,34 @@
+{
+    "$schema": "http://json-schema.org/schema",
+    "title": "Serve typescript project using Node.js",
+    "description": "Run a build target in watch mode and start the built project in a Node.js process each time the compilation succeeded.",
+    "type": "object",
+    "properties": {
+        "buildTarget": {
+            "description": "The build target that uses @da-mkay/ng-builder-typescript builder.",
+            "type": "string",
+            "pattern": "^[^:\\s]+:[^:\\s]+(:[^\\s]+)?$"
+        },
+        "main": {
+            "description": "The path of the main file relative to the build target's outputPath that will be run using Node.js.",
+            "type": "string"
+        },
+        "nodeBin": {
+            "description": "The path to the Node.js binary to use. If none is specified the path of the currently running Node.js process is used.",
+            "type": "string"
+        },
+        "cwd": {
+            "description": "The cwd (current working directory) to use for the spawned Node.js process. If none is specified the build target's outputPath is used.",
+            "type": "string"
+        },
+        "args": {
+            "description": "Arguments to pass to the spawned Node.js process.",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        }
+    },
+    "required": ["buildTarget", "main"],
+    "additionalProperties": false
+}

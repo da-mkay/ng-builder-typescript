@@ -5,6 +5,7 @@ import * as glob from 'glob';
 import * as chokidar from 'chokidar';
 import { Observable, of } from 'rxjs';
 import { BuilderContext, BuilderOutput } from '@angular-devkit/architect';
+import { normalizePath } from '../utils/path';
 
 export interface AssetOption extends JsonObject {
     /**
@@ -75,15 +76,15 @@ export class Assets {
     private assets: AssetOption[];
 
     constructor(private context: BuilderContext, private absOutput: string, assets: AssetOption[]) {
-        this.absRoot = this.normalizePath(context.workspaceRoot);
-        this.absOutput = this.normalizePath(absOutput);
+        this.absRoot = normalizePath(context.workspaceRoot);
+        this.absOutput = normalizePath(absOutput);
         this.assets = this.normalizeAssetOptions(assets);
     }
 
     private normalizeAssetOptions(assets: AssetOption[]): AssetOption[] {
         return assets.map((asset) => {
-            asset.input = this.normalizePath(path.join(this.absRoot, asset.input));
-            asset.output = this.normalizePath(path.join(this.absOutput, asset.output));
+            asset.input = normalizePath(path.join(this.absRoot, asset.input));
+            asset.output = normalizePath(path.join(this.absOutput, asset.output));
             asset.ignore = this.defaultIgnore.concat(asset.ignore || []);
             if (!asset.input.startsWith(this.absRoot + '/')) {
                 throw new Error('Invalid asset configuration. Asset input path must be beneath workspace root.');
@@ -93,14 +94,6 @@ export class Assets {
             }
             return asset;
         });
-    }
-
-    private normalizePath(p: string) {
-        p = path.normalize(p).replace(/\\/g, '/');
-        if (p.endsWith('/')) {
-            p = p.slice(0, -1);
-        }
-        return p;
     }
 
     private copyAsset(asset: AssetOption, file: string) {
