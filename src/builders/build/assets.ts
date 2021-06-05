@@ -89,7 +89,7 @@ export class Assets {
             if (!asset.input.startsWith(this.absRoot + '/')) {
                 throw new Error('Invalid asset configuration. Asset input path must be beneath workspace root.');
             }
-            if (!asset.output.startsWith(this.absOutput + '/')) {
+            if (asset.output !== this.absOutput && !asset.output.startsWith(this.absOutput + '/')) {
                 throw new Error('Invalid asset configuration. Asset output path must be beneath project output path.');
             }
             return asset;
