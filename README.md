@@ -4,8 +4,17 @@ A builder for the Angular CLI to build Node.js apps using the typescript compile
 
 ## Versions
 
-This version requires Angular 8, 9, 10 or 11.\
-For other Angular versions take a look at the [Versions page](https://www.npmjs.com/package/@da-mkay/ng-builder-typescript?activeTab=versions).
+This version of @da-mkay/ng-builder-typescript requires Angular 12. Use the tag `ng12` when installing this version, like so:\
+`ng add @da-mkay/ng-builder-typescript@ng12`
+
+For other Angular versions take a look at the table below or at the [Versions page](https://www.npmjs.com/package/@da-mkay/ng-builder-typescript?activeTab=versions).
+| Angular Version | Tag for @da-mkay/ng-builder-typescript |
+| --------------- | ---------------------------------------|
+| Angular 12      | ng12                                   |
+| Angular 11      | ng11                                   |
+| Angular 10      | ng10                                   |
+| Angular 9       | ng9                                    |
+| Angular 8       | ng8                                    |
 
 ## Table of Contents
 
@@ -27,8 +36,9 @@ $ cd workspace
 Then install the builder:
 
 ```
-$ ng add @da-mkay/ng-builder-typescript
+$ ng add @da-mkay/ng-builder-typescript@ng12
 ```
+(Using the tag `ng12`, the Angular 12 compatible version will be installed)
 
 Finally create a new Node.js/typescript project:
 
