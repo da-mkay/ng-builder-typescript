@@ -2,6 +2,11 @@
 
 A builder for the Angular CLI to build Node.js apps using the typescript compiler tsc (no webpack or any other bundler used).
 
+## Versions
+
+This version requires Angular 8, 9, 10 or 11.\
+For other Angular versions take a look at the [Versions page](https://www.npmjs.com/package/@da-mkay/ng-builder-typescript?activeTab=versions).
+
 ## Table of Contents
 
 -   [Start project from scratch](#start-project-from-scratch)
