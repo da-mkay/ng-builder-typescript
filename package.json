@@ -1,6 +1,6 @@
 {
     "name": "@da-mkay/ng-builder-typescript",
-    "version": "0.4.0",
+    "version": "13.0.2",
     "description": "A set of builders and schematics for the Angular CLI to build Node.js apps using the typescript compiler tsc (no webpack or any other bundler used).",
     "repository": {
         "type": "git",
@@ -10,8 +10,8 @@
     "scripts": {
         "build": "npm run clean && tsc -p tsconfig.json && npm run copy:jsons && npm run copy:schematic-files",
         "clean": "rimraf dist",
-        "copy:jsons": "cpx 'src/**/{schema,collection,builders}.json' ./dist",
-        "copy:schematic-files": "cpx 'src/schematics/**/files/**' ./dist/schematics"
+        "copy:jsons": "copyfiles --up 1 'src/**/*.json' ./dist",
+        "copy:schematic-files": "copyfiles --up 2 'src/schematics/**/files/**' ./dist/schematics"
     },
     "husky": {
         "hooks": {
@@ -31,32 +31,31 @@
     "author": "da-mkay (https://github.com/da-mkay)",
     "license": "MIT",
     "peerDependencies": {
-        "typescript": ">=3.4 <4.2",
-        "rxjs": "^6.4.0"
+        "typescript": ">=4.4.3 <4.7.0"
     },
     "devDependencies": {
         "@types/fs-extra": "^9.0.8",
         "@types/glob": "^7.1.3",
         "@types/inquirer": "^7.0.0",
-        "@types/node": "^14.14.26",
-        "cpx": "^1.5.0",
+        "@types/node": "^16.10.0",
+        "copyfiles": "^2.4.1",
         "husky": "^5.0.9",
         "prettier": "^2.2.1",
         "pretty-quick": "^3.1.0",
         "rimraf": "^3.0.2",
-        "rxjs": "^6.4.0",
-        "typescript": "^4.1.5"
+        "typescript": ">=4.4.3 <4.7.0"
     },
     "dependencies": {
-        "@angular-devkit/architect": ">=0.800.0 <0.900.0",
-        "@angular-devkit/core": "^8.0.0",
-        "@angular-devkit/schematics": "^8.0.0",
-        "@schematics/angular": "^8.0.0",
+        "@angular-devkit/architect": ">=0.1300.0 <0.1400.0",
+        "@angular-devkit/core": "^13.0.0",
+        "@angular-devkit/schematics": "^13.0.0",
+        "@schematics/angular": "^13.0.0",
         "ansi-colors": "^4.1.1",
         "chokidar": "^3.5.1",
         "fs-extra": "^9.1.0",
         "glob": "^7.1.6",
-        "inquirer": "^7.0.0"
+        "inquirer": "^7.0.0",
+        "rxjs": "^6.5.3"
     },
     "builders": "./dist/builders/builders.json",
     "schematics": "./dist/schematics/collection.json",

@@ -11,7 +11,6 @@ import {
     Tree,
     url,
 } from '@angular-devkit/schematics';
-import { validateProjectName } from '@schematics/angular/utility/validation';
 import { updateWorkspace, getWorkspace } from '@schematics/angular/utility/workspace';
 import { relativePathToWorkspaceRoot } from '@schematics/angular/utility/paths';
 import { ProjectType } from '@schematics/angular/utility/workspace-models';
@@ -26,7 +25,6 @@ export default function (options: ApplicationOptions): Rule {
         if (!options.name) {
             throw new SchematicsException(`Invalid options, "name" is required.`);
         }
-        validateProjectName(options.name);
 
         const workspace = await getWorkspace(tree);
         const newProjectRoot = (workspace.extensions.newProjectRoot as string) || '';
