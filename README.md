@@ -4,12 +4,14 @@ A builder for the Angular CLI to build Node.js apps using the typescript compile
 
 ## Versions
 
-This version of @da-mkay/ng-builder-typescript requires Angular 15. Use the tag `ng15` when installing this version, like so:\
-`ng add @da-mkay/ng-builder-typescript@ng15`
+This version of @da-mkay/ng-builder-typescript requires Angular 17. Use the tag `ng17` when installing this version, like so:\
+`ng add @da-mkay/ng-builder-typescript@ng17`
 
 For other Angular versions take a look at the table below or at the [Versions page](https://www.npmjs.com/package/@da-mkay/ng-builder-typescript?activeTab=versions).
 | Angular Version | Tag for @da-mkay/ng-builder-typescript |
 | --------------- | ---------------------------------------|
+| Angular 17      | ng17                                   |
+| Angular 16      | ng16                                   |
 | Angular 15      | ng15                                   |
 | Angular 14      | ng14                                   |
 | Angular 13      | ng13                                   |
@@ -39,9 +41,9 @@ $ cd workspace
 Then install the builder:
 
 ```
-$ ng add @da-mkay/ng-builder-typescript@ng15
+$ ng add @da-mkay/ng-builder-typescript@ng17
 ```
-(Using the tag `ng15`, the Angular 15 compatible version will be installed)
+(Using the tag `ng17`, the Angular 17 compatible version will be installed)
 
 Finally create a new Node.js/typescript project:
 
