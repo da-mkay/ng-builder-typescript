@@ -86,7 +86,7 @@ export class Assets {
             asset.input = normalizePath(path.join(this.absRoot, asset.input));
             asset.output = normalizePath(path.join(this.absOutput, asset.output));
             asset.ignore = this.defaultIgnore.concat(asset.ignore || []);
-            if (!asset.input.startsWith(this.absRoot + '/')) {
+            if (!asset.input.startsWith(this.absRoot + '/') && asset.input !== this.absRoot) {
                 throw new Error('Invalid asset configuration. Asset input path must be beneath workspace root.');
             }
             if (asset.output !== this.absOutput && !asset.output.startsWith(this.absOutput + '/')) {
