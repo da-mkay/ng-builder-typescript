@@ -187,26 +187,54 @@ function readTsconfig(tsconfigPath: string, context: BuilderContext) {
 }
 
 function createFileReplacementTsSystem(context: BuilderContext, fileReplacements: { replace: string; with: string }[] = []) {
+    const getCanonicalPath: (path: string) => string = ts.sys.useCaseSensitiveFileNames
+        ? (path) => path
+        : (path) => path.toLocaleLowerCase();
+
+    /**
+     * Wrap fn inside a function that accepts the same parameters (where the first is a path-string).
+     * The wrapper calls fn and returns its result. The path passed as first argument to fn will consider
+     * the configured file replacements.
+     */
+    const wrapPathBasedFn = <A extends readonly unknown[], R>(
+        fn: (...args: [string, ...A]) => R
+    ) => {
+        return (path: string, ...args: A) => {
+            path = replacements.get(getCanonicalPath(path)) ?? path;
+            return fn(path, ...args);
+        }
+    };
+
     const replacements = new Map<string, string>(
         fileReplacements.map((fr) => [
-            normalizePath(path.join(context.workspaceRoot, fr.replace)),
-            normalizePath(path.join(context.workspaceRoot, fr.with)),
+            getCanonicalPath(normalizePath(path.join(context.workspaceRoot, fr.replace))),
+            getCanonicalPath(normalizePath(path.join(context.workspaceRoot, fr.with))),
         ])
     );
+    const hiddenFiles = new Set(replacements.values());
 
     // use Proxy, s.t. we don't need to monkey-patch ts.sys
     const customTsSys = new Proxy(ts.sys, {
         get: function (target, prop, receiver) {
             if (prop === 'readFile') {
-                return function (path, encoding?) {
-                    path = replacements.get(path) || path;
-                    return target[prop](path, encoding);
-                }.bind(target);
+                return wrapPathBasedFn(target[prop]).bind(target);
             }
             if (prop === 'watchFile') {
-                return function (path, callback, pollingInterval?, options?) {
-                    path = replacements.get(path) || path;
-                    return target[prop](path, callback, pollingInterval, options);
+                return wrapPathBasedFn(target[prop]).bind(target);
+            }
+            if (prop === 'getFileSize') {
+                return wrapPathBasedFn(target[prop]).bind(target);
+            }
+            if (prop === 'fileExists') {
+                return wrapPathBasedFn(target[prop]).bind(target);
+            }
+            if (prop === 'getModifiedTime') {
+                return wrapPathBasedFn(target[prop]).bind(target);
+            }
+            if (prop === 'readDirectory') {
+                return function (...args: Parameters<typeof target[typeof prop]>) {
+                    const files = target[prop](...args);
+                    return files.filter(file => !hiddenFiles.has(getCanonicalPath(file)));
                 }.bind(target);
             }
             return Reflect.get(target, prop, receiver);
