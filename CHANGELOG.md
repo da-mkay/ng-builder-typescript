@@ -1,5 +1,80 @@
 # Changelog
 
+## Version 15.0.2, 16.0.3 and 17.0.4, 2024-01-29
+
+### `build` builder:
+
+- fix: when running build-builder in non-watch mode using file replacements both versions of a file end up in build (file to replace and the replacement file)
+
+## Version 15.0.1 and 16.0.2, 2024-01-28
+
+### `build` builder:
+
+- fix: problems when using file replacements
+    1. on case-insensitive filesystems the wrong file may be rebuild in watch mode
+    2. in watch mode both files (file to replace and the replacement file) end up in dist dir
+- fix: asset configuration does not allow to take assets from workspace root
+
+## Version 17.0.3, 2024-01-27
+
+- updated supported typescript version range to match Angular's version compatibility list
+
+### `build` builder:
+- fix: problems when using file replacements
+    1. on case-insensitive filesystems the wrong file may be rebuild in watch mode
+    2. in watch mode both files (file to replace and the replacement file) end up in dist dir
+- fix: asset configuration does not allow to take assets from workspace root
+
+## Version 17.0.2, 2023-12-13
+
+- updated README
+
+## Version 17.0.1, 2023-12-13
+
+- support for Angular 17
+
+## Version 16.0.1, 2023-12-13
+
+- updated README
+
+## Version 16.0.0, 2023-12-13
+
+- support for Angular 16
+
+## Version 14.0.1, 2023-12-13
+
+- updated supported typescript version range to match Angular's version compatibility list
+
+## Version 15.0.0, 2023-12-12
+
+- support for Angular 15
+
+## Version 14.0.0, 2023-12-12
+
+- support for Angular 14
+
+## Version 13.0.2, 2023-12-12
+
+- removed rxjs from peer dependencies
+
+## Version 13.0.1, 2023-12-12
+
+- updated README
+
+## Version 13.0.0, 2023-12-12
+
+- support for Angular 13
+
+## Version 12.0.0, 2021-06-07
+
+- support for Angular 12
+
+## Version 0.3.0, 2021-06-07
+
+### `build` builder:
+
+- fix: asset output path itself is not allowed
+
 ## Version 0.2.0, 2020-03-26
 
 ### `build` builder:
