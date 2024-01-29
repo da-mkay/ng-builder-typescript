@@ -9,6 +9,7 @@ import { BuildOptions, parseTsConfig } from '../build';
 import { existsSync } from 'fs-extra';
 import * as path from 'path';
 import { normalizePath } from '../utils/path';
+import * as ts from 'typescript';
 
 /**
  * Options for the "serve" builder.
@@ -25,14 +26,14 @@ export interface ServeOptions extends JsonObject {
  * Run a @da-mkay/ng-builder-typescript build target in watch mode and run it in a Node.js process each time
  * the compilation succeeded.
  */
- export const execute = (options: ServeOptions, context: BuilderContext): Observable<BuilderOutput> => {
+export const execute = (options: ServeOptions, context: BuilderContext): Observable<BuilderOutput> => {
     return defer(async () => {
         if (options.nodeBin && !existsSync(options.nodeBin)) {
             throw new Error(`node binary not found: ${options.nodeBin}`);
         }
         const buildTarget = targetFromTargetString(options.buildTarget);
         const buildTargetOptions = (await context.getTargetOptions(buildTarget)) as BuildOptions;
-        const parsedCommandLine = parseTsConfig(context, buildTargetOptions.tsConfig, buildTargetOptions.outputPath);
+        const parsedCommandLine = parseTsConfig(context, buildTargetOptions.tsConfig, ts.sys, buildTargetOptions.outputPath);
         const outputPath = normalizePath(parsedCommandLine.options.outDir);
         let cwd = outputPath;
         if (options.cwd) {

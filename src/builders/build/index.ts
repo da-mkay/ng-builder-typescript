@@ -31,12 +31,12 @@ const formatHost: ts.FormatDiagnosticsHost = {
  */
 export const execute = (options: BuildOptions, context: BuilderContext): Observable<BuilderOutput> => {
     return defer(() => {
-        const parsedCommandLine = parseTsConfig(context, options.tsConfig, options.outputPath);
+        const customTsSys = createFileReplacementTsSystem(context, options.fileReplacements);
+        const parsedCommandLine = parseTsConfig(context, options.tsConfig, customTsSys, options.outputPath);
         if (options.cleanOutputPath && parsedCommandLine.options.outDir) {
             removeSync(parsedCommandLine.options.outDir);
         }
         const assets = new Assets(context, parsedCommandLine.options.outDir, options.assets || []);
-        const customTsSys = createFileReplacementTsSystem(context, options.fileReplacements);
         const result: [ts.ParsedCommandLine, ts.System, Assets] = [parsedCommandLine, customTsSys, assets];
         return of(result);
     }).pipe(
@@ -154,12 +154,12 @@ function logDiagnostics(diagnostics: ts.Diagnostic | ts.Diagnostic[], context: B
  * @param tsConfig The path to the tsconfig file (relative to workspace root).
  * @param outputPath The path to an output folder to use (relative to workspace root). This overrides the tsconfig's outDir option.
  */
-export function parseTsConfig(context: BuilderContext, tsConfig: string, outputPath?: string) {
+export function parseTsConfig(context: BuilderContext, tsConfig: string, sys: ts.System, outputPath?: string) {
     const tsconfigPath = path.resolve(context.workspaceRoot, tsConfig);
     if (!existsSync(tsconfigPath)) {
         throw new Error(`tsconfig file could not be found: ${tsconfigPath}`);
     }
-    const parsedCommandLine = readTsconfig(tsconfigPath, context);
+    const parsedCommandLine = readTsconfig(tsconfigPath, sys, context);
     if (outputPath) {
         parsedCommandLine.options.outDir = path.resolve(context.workspaceRoot, outputPath);
     } else if (!parsedCommandLine.options.outDir) {
@@ -170,7 +170,7 @@ export function parseTsConfig(context: BuilderContext, tsConfig: string, outputP
     return parsedCommandLine;
 }
 
-function readTsconfig(tsconfigPath: string, context: BuilderContext) {
+function readTsconfig(tsconfigPath: string, sys: ts.System, context: BuilderContext) {
     const tsconfigText = readFileSync(tsconfigPath, { encoding: 'utf8' });
     const tsconfigJSON = ts.parseConfigFileTextToJson(tsconfigPath, tsconfigText);
     if (!tsconfigJSON.config) {
@@ -178,7 +178,7 @@ function readTsconfig(tsconfigPath: string, context: BuilderContext) {
         throw new Error('Failed to parse tsconfig');
     }
     const basePath = path.dirname(tsconfigPath);
-    const parsedCommandLine = ts.parseJsonConfigFileContent(tsconfigJSON.config, ts.sys, basePath, undefined, tsconfigPath);
+    const parsedCommandLine = ts.parseJsonConfigFileContent(tsconfigJSON.config, sys, basePath, undefined, tsconfigPath);
     if (parsedCommandLine.errors.length) {
         logDiagnostics(parsedCommandLine.errors, context);
         throw new Error('Failed to parse tsconfig');
