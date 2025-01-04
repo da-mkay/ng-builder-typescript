@@ -9,8 +9,8 @@ export default function (): Rule {
         if (dep) {
             return; // @types/node already in package.json
         }
-        const matchNodeVersion = process.version.match(/v(.*)/);
-        const defaultNodeVersion = matchNodeVersion ? `^${matchNodeVersion[1]}` : 'latest';
+        const matchNodeVersion = process.version.match(/v([^.]+)\..*/);
+        const defaultNodeVersion = matchNodeVersion ? `^${matchNodeVersion[1]}.0.0` : 'latest';
         if (context.interactive) {
             const answerInstall = await inquirer.prompt<{ install: boolean }>([
                 {
