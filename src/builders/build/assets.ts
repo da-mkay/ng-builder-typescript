@@ -1,5 +1,6 @@
 import { JsonObject } from '@angular-devkit/core';
 import { copySync } from 'fs-extra';
+import * as minimatch from 'minimatch';
 import * as path from 'path';
 import * as glob from 'glob';
 import * as chokidar from 'chokidar';
@@ -139,8 +140,17 @@ export class Assets {
                 subscriber.next({ success });
             };
             const watchers = this.assets.map((asset, i) => {
-                const watcher = chokidar.watch(asset.glob, { cwd: asset.input, ignored: asset.ignore, awaitWriteFinish: true });
+                const watcher = chokidar.watch('.', {
+                    cwd: asset.input,
+                    ignored: (path) => {
+                        return (asset.ignore ?? []).some((ignore) => minimatch(path, ignore));
+                    },
+                    awaitWriteFinish: true,
+                });
                 const onFileAddedOrChanged = (file: string) => {
+                    if (!minimatch(file, asset.glob)) {
+                        return;
+                    }
                     if (!ready[i]) {
                         waitingFiles.add(file, asset);
                         return;

@@ -4,12 +4,13 @@ A builder for the Angular CLI to build Node.js apps using the typescript compile
 
 ## Versions
 
-This version of @da-mkay/ng-builder-typescript requires Angular 18. Use the tag `ng18` when installing this version, like so:\
-`ng add @da-mkay/ng-builder-typescript@ng18`
+This version of @da-mkay/ng-builder-typescript requires Angular 19. Use the tag `ng19` when installing this version, like so:\
+`ng add @da-mkay/ng-builder-typescript@ng19`
 
 For other Angular versions take a look at the table below or at the [Versions page](https://www.npmjs.com/package/@da-mkay/ng-builder-typescript?activeTab=versions).
 | Angular Version | Tag for @da-mkay/ng-builder-typescript |
 | --------------- | ---------------------------------------|
+| Angular 19      | ng19                                   |
 | Angular 18      | ng18                                   |
 | Angular 17      | ng17                                   |
 | Angular 16      | ng16                                   |
@@ -42,9 +43,9 @@ $ cd workspace
 Then install the builder:
 
 ```
-$ ng add @da-mkay/ng-builder-typescript@ng18
+$ ng add @da-mkay/ng-builder-typescript@ng19
 ```
-(Using the tag `ng18`, the Angular 18 compatible version will be installed)
+(Using the tag `ng19`, the Angular 19 compatible version will be installed)
 
 Finally create a new Node.js/typescript project:
 

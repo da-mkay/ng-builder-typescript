@@ -1,5 +1,14 @@
 # Changelog
 
+## Version 19.0.0, 2025-01-04
+
+- support for Angular 19
+
+## Version 18.0.5, 2025-01-04
+
+- support for Angular 18
+- fix: @types/node packages do not exist for all minor/patch version combinations. This will cause the ng-add schematic to fail if, for example, it tries to install ^18.20.5. Thus, we default to the major node js version from now on. For example ^18.0.0.
+
 ## Version 15.0.2, 16.0.3 and 17.0.4, 2024-01-29
 
 ### `build` builder:
