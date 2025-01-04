@@ -1,6 +1,6 @@
 {
     "name": "@da-mkay/ng-builder-typescript",
-    "version": "18.0.5",
+    "version": "19.0.0",
     "description": "A set of builders and schematics for the Angular CLI to build Node.js apps using the typescript compiler tsc (no webpack or any other bundler used).",
     "repository": {
         "type": "git",
@@ -35,7 +35,6 @@
     },
     "devDependencies": {
         "@types/fs-extra": "^9.0.8",
-        "@types/glob": "^7.1.3",
         "@types/inquirer": "^7.0.0",
         "@types/node": "^20.11.1",
         "copyfiles": "^2.4.1",

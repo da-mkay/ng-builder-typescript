@@ -1,6 +1,6 @@
 import { JsonObject } from '@angular-devkit/core';
 import { copySync } from 'fs-extra';
-import * as minimatch from 'minimatch';
+import { minimatch } from 'minimatch';
 import * as path from 'path';
 import * as glob from 'glob';
 import * as chokidar from 'chokidar';
@@ -105,7 +105,7 @@ export class Assets {
 
     copy() {
         for (const asset of this.assets) {
-            const files = glob.sync(asset.glob, { cwd: asset.input, nosort: true, nodir: true, ignore: asset.ignore });
+            const files = glob.sync(asset.glob, { cwd: asset.input, nodir: true, ignore: asset.ignore });
             for (const file of files) {
                 this.copyAsset(asset, file);
             }
