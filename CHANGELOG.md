@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 19.0.0, 2025-01-04
+## Version 19.0.1, 2025-01-05
 
 - support for Angular 19
 
