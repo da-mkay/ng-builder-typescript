@@ -10,8 +10,8 @@
     "scripts": {
         "build": "npm run clean && tsc -p tsconfig.json && npm run copy:jsons && npm run copy:schematic-files",
         "clean": "rimraf dist",
-        "copy:jsons": "copyfiles --up 1 'src/**/*.json' ./dist",
-        "copy:schematic-files": "copyfiles --up 2 'src/schematics/**/files/**' ./dist/schematics"
+        "copy:jsons": "node copyfiles.js 1 'src/**/*.json' ./dist",
+        "copy:schematic-files": "node copyfiles.js 2 'src/schematics/**/files/**' ./dist/schematics"
     },
     "husky": {
         "hooks": {
@@ -31,29 +31,28 @@
     "author": "da-mkay (https://github.com/da-mkay)",
     "license": "MIT",
     "peerDependencies": {
-        "typescript": ">=5.5.0 <5.7.0"
+        "typescript": ">=5.8.0 <5.9.0"
     },
     "devDependencies": {
         "@types/fs-extra": "^9.0.8",
         "@types/inquirer": "^7.0.0",
         "@types/node": "^20.11.1",
-        "copyfiles": "^2.4.1",
         "husky": "^5.0.9",
         "prettier": "^2.2.1",
         "pretty-quick": "^3.1.0",
-        "rimraf": "^3.0.2",
-        "typescript": ">=5.5.0 <5.7.0"
+        "rimraf": "^6.0.1",
+        "typescript": ">=5.8.0 <5.9.0"
     },
     "dependencies": {
-        "@angular-devkit/architect": ">=0.1900.0 <0.2000.0",
-        "@angular-devkit/core": "^19.0.0",
-        "@angular-devkit/schematics": "^19.0.0",
-        "@schematics/angular": "^19.0.0",
+        "@angular-devkit/architect": ">=0.2000.0 <0.2100.0",
+        "@angular-devkit/core": "^20.0.0",
+        "@angular-devkit/schematics": "^20.0.0",
+        "@schematics/angular": "^20.0.0",
         "ansi-colors": "^4.1.1",
         "chokidar": "^4.0.0",
-        "fs-extra": "^9.1.0",
+        "fs-extra": "^11.3.0",
         "glob": "^10.4.5",
-        "inquirer": "^8.2.4",
+        "inquirer": "^12.7.0",
         "minimatch": "^9.0.5",
         "rxjs": "^7.4.0"
     },

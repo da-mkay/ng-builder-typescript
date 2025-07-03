@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 20.0.0, 2025-07-03
+
+- support for Angular 20
+- updated dependencies
+
 ## Version 19.0.2, 2025-07-02
 
 - fix: added missing dependency minimatch

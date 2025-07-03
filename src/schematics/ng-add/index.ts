@@ -1,7 +1,7 @@
 import { Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
 import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
 import { addPackageJsonDependency, getPackageJsonDependency, NodeDependencyType } from '@schematics/angular/utility/dependencies';
-import * as inquirer from 'inquirer';
+import inquirer from 'inquirer';
 
 export default function (): Rule {
     return async (tree: Tree, context: SchematicContext) => {

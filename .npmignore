@@ -1,3 +1,4 @@
 /src/
 /.prettierrc
 /tsconfig.json
+/copyfiles.js
